@@ -61,12 +61,12 @@ import pandas as pd
 import plotly
 import plotly.express as px
 import plotly.graph_objects as go
-import requests
 import sqlparse
 
 from ..exceptions import DependencyError, ImproperlyConfigured, ValidationError
 from ..types import TrainingPlan, TrainingPlanItem
 from ..utils import validate_config_path
+from security import safe_requests
 
 
 class VannaBase(ABC):
@@ -808,7 +808,7 @@ class VannaBase(ABC):
 
         # Download the database if it doesn't exist
         if not os.path.exists(url):
-            response = requests.get(url)
+            response = safe_requests.get(url)
             response.raise_for_status()  # Check that the request was successful
             with open(path, "wb") as f:
                 f.write(response.content)
@@ -1297,7 +1297,7 @@ class VannaBase(ABC):
                 path = os.path.basename(urlparse(url).path)
                 # Download the database if it doesn't exist
                 if not os.path.exists(path):
-                    response = requests.get(url)
+                    response = safe_requests.get(url)
                     response.raise_for_status()  # Check that the request was successful
                     with open(path, "wb") as f:
                         f.write(response.content)
@@ -1325,7 +1325,7 @@ class VannaBase(ABC):
             None
         """
         try:
-            import pyodbc
+            pass
         except ImportError:
             raise DependencyError(
                 "You need to install required dependencies to execute this method,"

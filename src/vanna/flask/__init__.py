@@ -7,12 +7,12 @@ from abc import ABC, abstractmethod
 from functools import wraps
 
 import flask
-import requests
 from flask import Flask, Response, jsonify, request, send_from_directory
 from flask_sock import Sock
 
 from .assets import css_content, html_content, js_content
 from .auth import AuthInterface, NoAuth
+from security import safe_requests
 
 
 class Cache(ABC):
@@ -736,7 +736,7 @@ class VannaFlaskApp:
         @self.flask_app.route("/vanna.svg")
         def proxy_vanna_svg():
             remote_url = "https://vanna.ai/img/vanna.svg"
-            response = requests.get(remote_url, stream=True)
+            response = safe_requests.get(remote_url, stream=True)
 
             # Check if the request to the remote URL was successful
             if response.status_code == 200:
